@@ -73,44 +73,81 @@ export async function getPaginatedUsers(
   );
 
   // 2. Build filtered query for page results
-  let query = supabase
-    .from("profiles")
-    .select(
-      "id, full_name, email, username, role, avatar_url, is_active, created_at, updated_at",
-      { count: "exact" }
-    );
+  let rows: ProfileRow[] = [];
+  let totalCount = 0;
 
-  if (params.search && params.search.trim().length > 0) {
-    const searchTerm = `%${params.search.trim()}%`;
-    query = query.or(`full_name.ilike.${searchTerm},email.ilike.${searchTerm},username.ilike.${searchTerm}`);
+  try {
+    let query = supabase
+      .from("profiles")
+      .select(
+        "id, full_name, email, username, role, avatar_url, is_active, created_at, updated_at",
+        { count: "exact" }
+      );
+
+    if (params.search && params.search.trim().length > 0) {
+      const searchTerm = `%${params.search.trim()}%`;
+      query = query.or(`full_name.ilike.${searchTerm},email.ilike.${searchTerm},username.ilike.${searchTerm}`);
+    }
+
+    if (params.role && params.role !== "ALL") {
+      query = query.eq("role", params.role);
+    }
+
+    if (params.status && params.status !== "ALL") {
+      query = query.eq("is_active", params.status === "ACTIVE");
+    }
+
+    query = query
+      .order("created_at", { ascending: false })
+      .range(offset, offset + pageSize - 1);
+
+    const { data: resRows, count: resCount, error: listError } = await query;
+    if (listError) {
+      throw listError;
+    }
+    rows = (resRows as ProfileRow[]) || [];
+    totalCount = resCount ?? 0;
+  } catch {
+    // Fallback without username column if not present in schema
+    let fallbackQuery = supabase
+      .from("profiles")
+      .select(
+        "id, full_name, email, role, avatar_url, is_active, created_at, updated_at",
+        { count: "exact" }
+      );
+
+    if (params.search && params.search.trim().length > 0) {
+      const searchTerm = `%${params.search.trim()}%`;
+      fallbackQuery = fallbackQuery.or(`full_name.ilike.${searchTerm},email.ilike.${searchTerm}`);
+    }
+
+    if (params.role && params.role !== "ALL") {
+      fallbackQuery = fallbackQuery.eq("role", params.role);
+    }
+
+    if (params.status && params.status !== "ALL") {
+      fallbackQuery = fallbackQuery.eq("is_active", params.status === "ACTIVE");
+    }
+
+    fallbackQuery = fallbackQuery
+      .order("created_at", { ascending: false })
+      .range(offset, offset + pageSize - 1);
+
+    const { data: fallbackRows, count: fallbackCount, error: fallbackError } = await fallbackQuery;
+    if (fallbackError) {
+      throw new Error(`Gagal memuat daftar pengguna: ${fallbackError.message}`);
+    }
+    rows = (fallbackRows as ProfileRow[]) || [];
+    totalCount = fallbackCount ?? 0;
   }
 
-  if (params.role && params.role !== "ALL") {
-    query = query.eq("role", params.role);
-  }
-
-  if (params.status && params.status !== "ALL") {
-    query = query.eq("is_active", params.status === "ACTIVE");
-  }
-
-  query = query
-    .order("created_at", { ascending: false })
-    .range(offset, offset + pageSize - 1);
-
-  const { data: rows, count, error: listError } = await query;
-
-  if (listError) {
-    throw new Error(`Gagal memuat daftar pengguna: ${listError.message}`);
-  }
-
-  const totalCount = count ?? 0;
   const totalPages = Math.ceil(totalCount / pageSize) || 1;
 
-  const items: UserListItem[] = ((rows as ProfileRow[]) || []).map((row) => ({
+  const items: UserListItem[] = rows.map((row) => ({
     id: row.id,
     fullName: row.full_name,
     email: row.email,
-    username: row.username,
+    username: row.username || (row.email ? row.email.split("@")[0] : null),
     role: row.role,
     avatarUrl: row.avatar_url,
     isActive: row.is_active,
@@ -134,22 +171,39 @@ export async function getPaginatedUsers(
 export async function getUserById(id: string): Promise<UserListItem | null> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("id, full_name, email, username, role, avatar_url, is_active, created_at, updated_at")
-    .eq("id", id)
-    .maybeSingle();
+  let row: ProfileRow | null = null;
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("id, full_name, email, username, role, avatar_url, is_active, created_at, updated_at")
+      .eq("id", id)
+      .maybeSingle();
 
-  if (error || !data) {
-    return null;
+    if (!error && data) {
+      row = data as ProfileRow;
+    }
+  } catch {
+    // Continue to fallback
   }
 
-  const row = data as ProfileRow;
+  if (!row) {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("id, full_name, email, role, avatar_url, is_active, created_at, updated_at")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error || !data) {
+      return null;
+    }
+    row = data as ProfileRow;
+  }
+
   return {
     id: row.id,
     fullName: row.full_name,
     email: row.email,
-    username: row.username,
+    username: row.username || (row.email ? row.email.split("@")[0] : null),
     role: row.role,
     avatarUrl: row.avatar_url,
     isActive: row.is_active,

@@ -2,8 +2,7 @@
 -- Deterministic test users, roles, sample project, and tasks
 
 -- 1. Test Users in auth.users (Local development only)
--- Password for all test users: 'password123'
--- Hash generated via standard bcrypt cost 10: $2a$10$0G8iE5wI1Jj7N2xH.3jHie7B9fB7bU0cK7xS0F9n5N8aE3m0V4rGe
+-- Password for all test users: '12345678'
 INSERT INTO auth.users (
   id,
   instance_id,
@@ -21,14 +20,14 @@ INSERT INTO auth.users (
   role,
   aud
 ) VALUES 
-  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000000', 'admin@locotrack.local', crypt('password123', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Super Administrator"}', now(), now(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000000', 'cd@locotrack.local', crypt('password123', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Clara Director"}', now(), now(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000000', 'ae@locotrack.local', crypt('password123', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Alex Executive"}', now(), now(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000000', 'sms@locotrack.local', crypt('password123', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Sam Specialist"}', now(), now(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000000', 'designer@locotrack.local', crypt('password123', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Diana Designer"}', now(), now(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000000', 'editor@locotrack.local', crypt('password123', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Evan Editor"}', now(), now(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000000', 'inactive@locotrack.local', crypt('password123', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Ian Inactive"}', now(), now(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000008', '00000000-0000-0000-0000-000000000000', 'sms2@locotrack.local', crypt('password123', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Second Specialist"}', now(), now(), 'authenticated', 'authenticated')
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000000', 'admin@locotrack.local', crypt('12345678', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Administrator","username":"admin"}', now(), now(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000000', 'putri@locotrack.local', crypt('12345678', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Putri","username":"putri"}', now(), now(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000000', 'ae@locotrack.local', crypt('12345678', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Alex Executive","username":"ae"}', now(), now(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000000', 'naja@locotrack.local', crypt('12345678', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Naja","username":"naja"}', now(), now(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000000', 'farel@locotrack.local', crypt('12345678', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Farel","username":"farel"}', now(), now(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000000', 'rafli@locotrack.local', crypt('12345678', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Rafli","username":"rafli"}', now(), now(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000000', 'inactive@locotrack.local', crypt('12345678', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Ian Inactive","username":"inactive"}', now(), now(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000008', '00000000-0000-0000-0000-000000000000', 'amel@locotrack.local', crypt('12345678', gen_salt('bf')), now(), '', '', '', '', '{"provider":"email","providers":["email"]}', '{"full_name":"Amel","username":"amel"}', now(), now(), 'authenticated', 'authenticated')
 ON CONFLICT (id) DO UPDATE SET
   encrypted_password = EXCLUDED.encrypted_password,
   email_confirmed_at = EXCLUDED.email_confirmed_at;
@@ -60,15 +59,17 @@ ON CONFLICT (provider_id, provider) DO NOTHING;
 -- 2. Test Profiles in public.profiles
 INSERT INTO public.profiles (id, full_name, email, role, is_active)
 VALUES 
-  ('00000000-0000-0000-0000-000000000001', 'Super Administrator', 'admin@locotrack.local', 'ADMIN', true),
-  ('00000000-0000-0000-0000-000000000002', 'Clara Director', 'cd@locotrack.local', 'CREATIVE_DIRECTOR', true),
+  ('00000000-0000-0000-0000-000000000001', 'Administrator', 'admin@locotrack.local', 'ADMIN', true),
+  ('00000000-0000-0000-0000-000000000002', 'Putri', 'putri@locotrack.local', 'CREATIVE_DIRECTOR', true),
   ('00000000-0000-0000-0000-000000000003', 'Alex Executive', 'ae@locotrack.local', 'ACCOUNT_EXECUTIVE', true),
-  ('00000000-0000-0000-0000-000000000004', 'Sam Specialist', 'sms@locotrack.local', 'SOCIAL_MEDIA_SPECIALIST', true),
-  ('00000000-0000-0000-0000-000000000005', 'Diana Designer', 'designer@locotrack.local', 'GRAPHIC_DESIGNER', true),
-  ('00000000-0000-0000-0000-000000000006', 'Evan Editor', 'editor@locotrack.local', 'VIDEO_EDITOR', true),
+  ('00000000-0000-0000-0000-000000000004', 'Naja', 'naja@locotrack.local', 'SOCIAL_MEDIA_SPECIALIST', true),
+  ('00000000-0000-0000-0000-000000000005', 'Farel', 'farel@locotrack.local', 'GRAPHIC_DESIGNER', true),
+  ('00000000-0000-0000-0000-000000000006', 'Rafli', 'rafli@locotrack.local', 'VIDEO_EDITOR', true),
   ('00000000-0000-0000-0000-000000000007', 'Ian Inactive', 'inactive@locotrack.local', 'GRAPHIC_DESIGNER', false),
-  ('00000000-0000-0000-0000-000000000008', 'Second Specialist', 'sms2@locotrack.local', 'SOCIAL_MEDIA_SPECIALIST', true)
+  ('00000000-0000-0000-0000-000000000008', 'Amel', 'amel@locotrack.local', 'SOCIAL_MEDIA_SPECIALIST', true)
 ON CONFLICT (id) DO UPDATE SET
+  full_name = EXCLUDED.full_name,
+  email = EXCLUDED.email,
   role = EXCLUDED.role,
   is_active = EXCLUDED.is_active;
 

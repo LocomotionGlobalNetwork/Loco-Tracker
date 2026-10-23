@@ -31,8 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className="min-h-screen bg-background text-foreground antialiased selection:bg-foreground selection:text-background">
+    <html lang="en" className={cn("font-sans", geist.variable)} suppressHydrationWarning>
+      <body
+        className="min-h-screen bg-background text-foreground antialiased selection:bg-foreground selection:text-background"
+        suppressHydrationWarning
+      >
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster />
       </body>

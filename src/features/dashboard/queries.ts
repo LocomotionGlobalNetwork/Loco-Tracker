@@ -108,7 +108,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
     // 7. All Profiles for Role Distribution & Account Creation Audit
     supabase
       .from("profiles")
-      .select("id, full_name, username, role, is_active, created_at"),
+      .select("id, full_name, email, role, is_active, created_at"),
 
     // 8. Workflow Statuses across all active projects
     supabase
@@ -210,7 +210,11 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
       actionLabel: "Pendaftaran akun personel",
       targetUserName: p.full_name,
       targetUserRole: ROLE_LABELS[p.role as UserRole] || p.role,
-      contextName: p.username ? `@${p.username}` : "Akun Sistem",
+      contextName: (p as { username?: string; email?: string }).username
+        ? `@${(p as { username?: string }).username}`
+        : (p as { email?: string }).email
+        ? `@${(p as { email: string }).email.split("@")[0]}`
+        : "Akun Sistem",
       createdAt: p.created_at,
     }));
 

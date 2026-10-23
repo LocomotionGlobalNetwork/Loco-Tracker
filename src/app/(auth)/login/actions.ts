@@ -38,13 +38,37 @@ export async function resolveLoginIdentifier(
 
   try {
     const admin = createAdminClient();
-    const { data: profile, error } = await admin
-      .from("profiles")
-      .select("email, is_active")
-      .ilike("username", trimmed)
-      .maybeSingle();
+    let profile: { email: string; is_active: boolean } | null = null;
 
-    if (error || !profile) {
+    // 1. Try matching by username column (if exists in database schema)
+    try {
+      const { data, error } = await admin
+        .from("profiles")
+        .select("email, is_active")
+        .ilike("username", trimmed)
+        .maybeSingle();
+
+      if (!error && data) {
+        profile = data;
+      }
+    } catch {
+      // Username column might not exist in all environments
+    }
+
+    // 2. Fallback: match by email prefix (e.g. 'putri' -> 'putri@locotrack.local')
+    if (!profile) {
+      const { data, error } = await admin
+        .from("profiles")
+        .select("email, is_active")
+        .ilike("email", `${trimmed.toLowerCase()}@%`)
+        .maybeSingle();
+
+      if (!error && data) {
+        profile = data;
+      }
+    }
+
+    if (!profile) {
       return {
         success: false,
         error: "Email/username atau kata sandi tidak sesuai.",

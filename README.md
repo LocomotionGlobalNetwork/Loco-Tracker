@@ -29,20 +29,19 @@ Sistem manajemen alur kerja dan handover proyek agensi kreatif dari tahap peneri
 
 Daftar akun uji coba bawaan (_seed data_) yang siap digunakan untuk pengujian alur kerja sistem sesuai dengan definisi peran (`user_role`) pada `supabase/production_schema.sql` dan data awal pada `supabase/seed.sql`.
 
-Pengguna dapat masuk ke sistem (_login_) menggunakan **Username** maupun **Email** dengan kata sandi default: **`password123`**.
+### Detail Akun & Email Sistem
 
-| Role Sistem (`user_role`) | Peran / Posisi          | Nama Pengguna       | Username   | Email                      | Password      |
-| :------------------------ | :---------------------- | :------------------ | :--------- | :------------------------- | :------------ |
-| `ADMIN`                   | Administrator           | Super Administrator | `admin`    | `admin@locotrack.local`    | `password123` |
-| `CREATIVE_DIRECTOR`       | Creative Director       | Clara Director      | `cd`       | `cd@locotrack.local`       | `password123` |
-| `ACCOUNT_EXECUTIVE`       | Account Executive       | Alex Executive      | `ae`       | `ae@locotrack.local`       | `password123` |
-| `SOCIAL_MEDIA_SPECIALIST` | Social Media Specialist | Sam Specialist      | `sms`      | `sms@locotrack.local`      | `password123` |
-| `GRAPHIC_DESIGNER`        | Graphic Designer        | Diana Designer      | `designer` | `designer@locotrack.local` | `password123` |
-| `VIDEO_EDITOR`            | Video Editor            | Evan Editor         | `editor`   | `editor@locotrack.local`   | `password123` |
+| Role Sistem (`user_role`) | Peran / Posisi          | Nama Pengguna | Username | Email                   | Password   |
+| :------------------------ | :---------------------- | :------------ | :------- | :---------------------- | :--------- |
+| `ADMIN`                   | Administrator           | Administrator | `admin`  | `admin@locotrack.local` | `12345678` |
+| `CREATIVE_DIRECTOR`       | Creative Director       | Putri         | `putri`  | `putri@locotrack.local` | `12345678` |
+| `SOCIAL_MEDIA_SPECIALIST` | Social Media Specialist | Naja          | `naja`   | `naja@locotrack.local`  | `12345678` |
+| `SOCIAL_MEDIA_SPECIALIST` | Social Media Specialist | Amel          | `amel`   | `amel@locotrack.local`  | `12345678` |
+| `GRAPHIC_DESIGNER`        | Graphic Designer        | Farel         | `farel`  | `farel@locotrack.local` | `12345678` |
+| `VIDEO_EDITOR`            | Video Editor            | Rafli         | `rafli`  | `rafli@locotrack.local` | `12345678` |
 
 **Catatan Akun Uji Coba Tambahan:**
 
-- **Akun SMS Alternatif:** `sms2@locotrack.local` (Username: `sms2`, Nama: _Second Specialist_) untuk pengujian kolaborasi multi-spesialis.
 - **Akun Nonaktif (Uji Keamanan):** `inactive@locotrack.local` (Username: `inactive`, Nama: _Ian Inactive_, Role: `GRAPHIC_DESIGNER`) dengan status `is_active = false` untuk pengujian validasi penolakan login pengguna yang dinonaktifkan.
 - **Kustomisasi Akun:** Informasi akun dan hak akses dapat dikonfigurasi kembali oleh Administrator melalui menu Manajemen Pengguna atau diinisialisasi melalui skrip `scripts/bootstrap-admin.ts`.
 
@@ -196,7 +195,7 @@ Seluruh skema database sudah diekspor dan tersedia di repository ini agar develo
 
 - `supabase/production_schema.sql`: Satu file skema kompilasi utuh berisi seluruh enum, tabel relasional, triggers, fungsi database, RLS (Row Level Security), dan kebijakan Supabase Storage.
 - `supabase/migrations/`: Kumpulan 31 file migrasi berurutan untuk alur kerja Supabase CLI lokal.
-- `supabase/seed.sql`: Data akun uji coba untuk seluruh peran pengguna (password default: `password123`).
+- `supabase/seed.sql`: Data akun uji coba untuk seluruh peran pengguna (password default: `12345678`).
 - `scripts/dummy-test-data.sql`: Data sampel untuk klien, brand, dan proyek awal.
 
 #### Pilihan 1: Import ke Supabase Cloud
