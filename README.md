@@ -2,13 +2,11 @@
 
 Sistem manajemen alur kerja dan handover proyek agensi kreatif dari tahap penerimaan brief, perencanaan konten, penulisan skrip, produksi aset, QC internal, review klien, hingga publikasi akhir.
 
-Demo Preview: [https://lt.fikrisan.net](https://lt.fikrisan.net)
-
 ---
 
 ## Daftar Isi
 
-- [Demo Preview dan Akun Akses](#demo-preview-dan-akun-akses)
+- [Akun Akses](#akun-akses)
 - [Dokumen Acuan](#dokumen-acuan)
 - [Fitur Utama](#fitur-utama)
 - [Peran Pengguna](#peran-pengguna)
@@ -27,22 +25,26 @@ Demo Preview: [https://lt.fikrisan.net](https://lt.fikrisan.net)
 
 ---
 
-## Demo Preview dan Akun Akses
+## Akun Akses
 
-Versi preview aplikasi dapat dicoba langsung melalui tautan berikut:  
-Website: [https://lt.fikrisan.net](https://lt.fikrisan.net)
+Daftar akun uji coba bawaan (_seed data_) yang siap digunakan untuk pengujian alur kerja sistem sesuai dengan definisi peran (`user_role`) pada `supabase/production_schema.sql` dan data awal pada `supabase/seed.sql`.
 
-Daftar akun uji coba berdasarkan peran:
+Pengguna dapat masuk ke sistem (_login_) menggunakan **Username** maupun **Email** dengan kata sandi default: **`password123`**.
 
-| Role | Username | Password |
-| :--- | :--- | :--- |
-| Administrator | `admin` | `12345678` |
-| Creative Director | `putri` | `12345678` |
-| Social Media Specialist | `naja` | `12345678` |
-| Graphic Designer | `deven` | `12345678` |
-| Video Editor | `rafli` | `12345678` |
+| Role Sistem (`user_role`) | Peran / Posisi          | Nama Pengguna       | Username   | Email                      | Password      |
+| :------------------------ | :---------------------- | :------------------ | :--------- | :------------------------- | :------------ |
+| `ADMIN`                   | Administrator           | Super Administrator | `admin`    | `admin@locotrack.local`    | `password123` |
+| `CREATIVE_DIRECTOR`       | Creative Director       | Clara Director      | `cd`       | `cd@locotrack.local`       | `password123` |
+| `ACCOUNT_EXECUTIVE`       | Account Executive       | Alex Executive      | `ae`       | `ae@locotrack.local`       | `password123` |
+| `SOCIAL_MEDIA_SPECIALIST` | Social Media Specialist | Sam Specialist      | `sms`      | `sms@locotrack.local`      | `password123` |
+| `GRAPHIC_DESIGNER`        | Graphic Designer        | Diana Designer      | `designer` | `designer@locotrack.local` | `password123` |
+| `VIDEO_EDITOR`            | Video Editor            | Evan Editor         | `editor`   | `editor@locotrack.local`   | `password123` |
 
-Informasi akun dan hak akses di atas dapat disesuaikan kembali oleh Administrator melalui menu manajemen pengguna.
+**Catatan Akun Uji Coba Tambahan:**
+
+- **Akun SMS Alternatif:** `sms2@locotrack.local` (Username: `sms2`, Nama: _Second Specialist_) untuk pengujian kolaborasi multi-spesialis.
+- **Akun Nonaktif (Uji Keamanan):** `inactive@locotrack.local` (Username: `inactive`, Nama: _Ian Inactive_, Role: `GRAPHIC_DESIGNER`) dengan status `is_active = false` untuk pengujian validasi penolakan login pengguna yang dinonaktifkan.
+- **Kustomisasi Akun:** Informasi akun dan hak akses dapat dikonfigurasi kembali oleh Administrator melalui menu Manajemen Pengguna atau diinisialisasi melalui skrip `scripts/bootstrap-admin.ts`.
 
 ---
 
@@ -69,14 +71,14 @@ Pengembangan dan alur kerja aplikasi ini mengacu pada dokumen spesifikasi [TRACK
 
 Daftar peran yang tersedia di dalam sistem:
 
-| Role | Deskripsi Singkat | Wewenang Utama |
-| :--- | :--- | :--- |
-| **`ADMIN`** | Administrator Sistem | Mengelola seluruh pengguna, konfigurasi brand dan klien, serta akses sistem. |
-| **`CREATIVE_DIRECTOR`** | Pengarah Kreatif | Menyetujui brief, memimpin review QC, dan approval akhir deliverable. |
-| **`ACCOUNT_EXECUTIVE`** | Penghubung Klien | Menginput brief, mengelola komunikasi dengan klien, dan mencatat hasil review. |
-| **`SOCIAL_MEDIA_SPECIALIST`** | Spesialis Media Sosial | Menyusun perencanaan konten, copywriting, dan jadwal publikasi. |
-| **`GRAPHIC_DESIGNER`** | Desainer Grafis | Mengerjakan aset visual grafis sesuai brief dan catatan revisi. |
-| **`VIDEO_EDITOR`** | Editor Video | Memproduksi materi video dan mengunggah hasil deliverable. |
+| Role                          | Deskripsi Singkat      | Wewenang Utama                                                                 |
+| :---------------------------- | :--------------------- | :----------------------------------------------------------------------------- |
+| **`ADMIN`**                   | Administrator Sistem   | Mengelola seluruh pengguna, konfigurasi brand dan klien, serta akses sistem.   |
+| **`CREATIVE_DIRECTOR`**       | Pengarah Kreatif       | Menyetujui brief, memimpin review QC, dan approval akhir deliverable.          |
+| **`ACCOUNT_EXECUTIVE`**       | Penghubung Klien       | Menginput brief, mengelola komunikasi dengan klien, dan mencatat hasil review. |
+| **`SOCIAL_MEDIA_SPECIALIST`** | Spesialis Media Sosial | Menyusun perencanaan konten, copywriting, dan jadwal publikasi.                |
+| **`GRAPHIC_DESIGNER`**        | Desainer Grafis        | Mengerjakan aset visual grafis sesuai brief dan catatan revisi.                |
+| **`VIDEO_EDITOR`**            | Editor Video           | Memproduksi materi video dan mengunggah hasil deliverable.                     |
 
 ---
 
@@ -145,6 +147,7 @@ Daftar peran yang tersedia di dalam sistem:
 ## Panduan Memulai
 
 ### Prasyarat
+
 - [Node.js](https://nodejs.org/) versi 20 ke atas
 - [npm](https://www.npmjs.com/)
 - [Supabase CLI](https://supabase.com/docs/guides/cli) (opsional jika menjalankan database lokal)
@@ -152,6 +155,7 @@ Daftar peran yang tersedia di dalam sistem:
 ### Instalasi
 
 1. Clone repository:
+
    ```bash
    git clone <URL_REPO_ANDA>
    cd handover-tracker
@@ -165,11 +169,13 @@ Daftar peran yang tersedia di dalam sistem:
 ### Konfigurasi Environment
 
 Salin file `.env.example` ke `.env.local`:
+
 ```bash
 cp .env.example .env.local
 ```
 
 Sesuaikan nilai variabel berikut di `.env.local`:
+
 ```ini
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -187,28 +193,34 @@ ADMIN_NAME=System Administrator
 Seluruh skema database sudah diekspor dan tersedia di repository ini agar developer selanjutnya dapat langsung mengimpor tanpa konfigurasi manual dari awal.
 
 #### Berkas Database yang Tersedia
+
 - `supabase/production_schema.sql`: Satu file skema kompilasi utuh berisi seluruh enum, tabel relasional, triggers, fungsi database, RLS (Row Level Security), dan kebijakan Supabase Storage.
 - `supabase/migrations/`: Kumpulan 31 file migrasi berurutan untuk alur kerja Supabase CLI lokal.
 - `supabase/seed.sql`: Data akun uji coba untuk seluruh peran pengguna (password default: `password123`).
 - `scripts/dummy-test-data.sql`: Data sampel untuk klien, brand, dan proyek awal.
 
 #### Pilihan 1: Import ke Supabase Cloud
+
 1. Buka dashboard project di [Supabase](https://supabase.com).
 2. Masuk ke menu SQL Editor.
 3. Salin isi file `supabase/production_schema.sql`, tempel di editor, lalu jalankan (Run).
 4. Jika membutuhkan akun pengujian awal, jalankan juga file `supabase/seed.sql`.
 
 #### Pilihan 2: Import ke Supabase Lokal (CLI)
+
 Jika menjalankan Supabase secara lokal dengan Docker:
+
 ```bash
 npx supabase start
 npx supabase db reset
 ```
+
 Perintah `db reset` akan otomatis menerapkan seluruh migrasi di `supabase/migrations/` dan mengisi data awal dari `supabase/seed.sql`.
 
 ### Inisialisasi Akun Admin
 
 Jalankan skrip berikut untuk membuat akun admin pertama:
+
 ```bash
 npx tsx scripts/bootstrap-admin.ts
 ```
@@ -216,6 +228,7 @@ npx tsx scripts/bootstrap-admin.ts
 ### Menjalankan Aplikasi
 
 Jalankan server development:
+
 ```bash
 npm run dev
 ```
@@ -228,22 +241,18 @@ Buka [http://localhost:3000](http://localhost:3000) di browser.
 
 Beberapa perintah yang tersedia di project ini:
 
-| Perintah | Keterangan |
-| :--- | :--- |
-| `npm run dev` | Menjalankan server development |
-| `npm run build` | Membuat build production |
-| `npm run lint` | Menjalankan pemeriksaan kode dengan ESLint |
-| `node scripts/gen-types.cjs` | Generate tipe TypeScript dari schema Supabase lokal |
-| `npx tsx scripts/bootstrap-admin.ts` | Inisialisasi akun Admin pertama |
-| `npx tsx scripts/verify-database.ts` | Verifikasi struktur tabel dan relasi database |
-| `npx tsx scripts/smoke-production-full.ts` | Uji coba alur kerja produksi secara menyeluruh |
+| Perintah                                   | Keterangan                                          |
+| :----------------------------------------- | :-------------------------------------------------- |
+| `npm run dev`                              | Menjalankan server development                      |
+| `npm run build`                            | Membuat build production                            |
+| `npm run lint`                             | Menjalankan pemeriksaan kode dengan ESLint          |
+| `node scripts/gen-types.cjs`               | Generate tipe TypeScript dari schema Supabase lokal |
+| `npx tsx scripts/bootstrap-admin.ts`       | Inisialisasi akun Admin pertama                     |
+| `npx tsx scripts/verify-database.ts`       | Verifikasi struktur tabel dan relasi database       |
+| `npx tsx scripts/smoke-production-full.ts` | Uji coba alur kerja produksi secara menyeluruh      |
 
 ---
 
 ## Lisensi
 
 Didistribusikan untuk keperluan internal agensi.
-
----
-
-Created by [fikrisan](https://instagram.com/devacc.1)
